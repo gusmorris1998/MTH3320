@@ -1,0 +1,63 @@
+N=5;
+A=full(build_laplace_2D(N));
+A_banded = LUFactorization_banded(A,N);
+A_ikj = LUFactorization_ikj(A);
+A_kij = LUFactorization(A);
+
+norm(A_banded - A_ikj);
+norm(A_ikj - A_kij);
+
+N_array = [18:2:30];
+LU_ikj_time = [];
+LU_banded_time = [];
+
+% zeros(size(N_array)); LU_banded_time = zeros(size(N_array));
+
+for N=N_array
+    A=full(build_laplace_2D(N));
+    tic;
+    LUFactorization_ikj(A);
+    time_elapsed=toc;
+    LU_ikj_time = [LU_ikj_time, time_elapsed];
+end
+
+for N=N_array
+    A=full(build_laplace_2D(N));
+    tic;
+    LUFactorization_banded(A, N);
+    time_elapsed=toc;
+    LU_banded_time = [LU_banded_time, time_elapsed];
+end
+
+LU_ikj_time;
+LU_banded_time;
+
+abs_time_diff = LU_ikj_time(1) - LU_banded_time(1);
+
+loglog(N_array, LU_ikj_time);
+title('loglog')
+
+hold on
+loglog(N_array, LU_banded_time);
+hold off
+
+
+p1 = polyfit(N_array, LU_ikj_time,1);
+y1 = polyval(p1,N_array);
+p2 = polyfit(N_array, LU_banded_time,1);
+y2 = polyval(p2,N_array);
+
+plot(N_array, y1)
+title('loglog')
+hold on
+plot(N_array, y2)
+hold off
+
+
+
+
+
+
+
+
+

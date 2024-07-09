@@ -1,0 +1,28 @@
+function [x res steps]=steepest(A,x0,b,tol,maxit)
+% Performs a sequence of steepest descent iterations on
+% A x = b using the initial estimate x0, until the 2-norm
+% of the residual is smaller than tol (relative
+% to the initial residual), or until the number of iterations
+% reaches maxit. ‘steps’ is the number of steps
+% that were performed, and ‘res’ is a vector with the
+% residual size after every interation (the 2-norm of
+% the residual vector).
+
+steps = 0;
+r_k = b - A*x0;
+res = [norm(b - A*x0)];
+x = [x0];
+
+while res(end) > tol && steps <= maxit
+    steps = steps + 1;
+    alpha = (r_k.'*r_k)/((r_k.')*A*r_k);
+    x_k = x(:, end) + alpha*r_k;
+    x = [x, x_k];
+    r_k = r_k - alpha*A*r_k;
+    res = [res; norm(r_k)];
+end
+
+
+
+
+
